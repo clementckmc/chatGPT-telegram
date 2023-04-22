@@ -3,7 +3,7 @@ import os
 import logging
 import requests
 from telegram import Update, Bot
-from telegram.ext import filters, MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes, filters
 from dotenv import load_dotenv
 import openai
 
@@ -22,33 +22,22 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="This is chatGPT. You can ask me anything!")
-
 def getResponse(prompt):
     response = requests.post(
         'https://api.openai.com/v1/completions',
-        headers={'Authorization': "Bearer {openai.api_key}"},
-        json={'model': MODEL, 'prompt': prompt, 'max_tokens': 128, 'temperature': 0.5 }  )
+        headers={'Authorization': 'Bearer ' + openai.api_key},
+        json={'model': MODEL, 'prompt': prompt, 'max_tokens': 1024, 'temperature': 0.5 }  )
+    print(response.json()['choices'][0]['text'])
+    return response.json()['choices'][0]['text']
 
-    return response.json()
-
-def sendMessage(chat_id, message_id, message):
-    data = {
-        'chat_id': chat_id,
-        'text': message,
-        'reply_to_message_id': message_id
-    }
-
-
+async def chatBot(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print(update.message.text)
+    reply = getResponse(update.message.text)
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    start_handler = CommandHandler('start', start)
-
-    application.add_handler(start_handler)
+    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), chatBot))
 
     application.run_polling()
