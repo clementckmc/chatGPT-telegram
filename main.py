@@ -27,11 +27,11 @@ def getResponse(prompt):
         'https://api.openai.com/v1/completions',
         headers={'Authorization': 'Bearer ' + openai.api_key},
         json={'model': MODEL, 'prompt': prompt, 'max_tokens': 1024, 'temperature': 0.5 }  )
-    print(response.json()['choices'][0]['text'])
+    print("AI: "+ response.json()['choices'][0]['text'])
     return response.json()['choices'][0]['text']
 
 async def chatBot(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print(update.message.text)
+    print("User: " + update.message.text)
     reply = getResponse(update.message.text)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
 
