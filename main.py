@@ -15,20 +15,32 @@ BOT_TOKEN = os.environ['BOT_TOKEN']
 # openai
 openai.organization = "org-xAfG7yH1ydHAjgbRGCeSFfrO"
 openai.api_key = os.environ['OPENAI_API_KEY']
-MODEL = "text-davinci-003"
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
+# completion model (text-davinci)
+# def getResponse(prompt):
+#     response = requests.post(
+#         'https://api.openai.com/v1/completions',
+#         headers={'Authorization': 'Bearer ' + openai.api_key},
+#         json={'model': "text-davinci-002", 'prompt': prompt, 'max_tokens': 512, 'temperature': 0.5 }  )
+#     reply = response.json()['choices'][0]['text']
+#     print("AI: "+ reply)
+#     return reply
+
+# chat completion (chat-3.5-turbo)
 def getResponse(prompt):
     response = requests.post(
-        'https://api.openai.com/v1/completions',
+        'https://api.openai.com/v1/chat/completions',
         headers={'Authorization': 'Bearer ' + openai.api_key},
-        json={'model': MODEL, 'prompt': prompt, 'max_tokens': 1024, 'temperature': 0.5 }  )
-    print("AI: "+ response.json()['choices'][0]['text'])
-    return response.json()['choices'][0]['text']
+        json={'model': "gpt-3.5-turbo", 'messages': [{'role': 'user', 'content': prompt}], 'max_tokens': 512, 'temperature': 0.5 }  )
+    print(response.json())
+    reply = response.json()['choices'][0]['message']['content']
+    print("AI: "+ reply)
+    return reply
 
 async def chatBot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print("User: " + update.message.text)
