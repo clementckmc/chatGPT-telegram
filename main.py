@@ -1,9 +1,8 @@
-import asyncio
 import os
 import logging
 import requests
-from telegram import Update, Bot
-from telegram.ext import MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes, filters
+from telegram import Update
+from telegram.ext import MessageHandler, ApplicationBuilder, ContextTypes, filters
 from dotenv import load_dotenv
 import openai
 
@@ -37,7 +36,6 @@ def getResponse(prompt):
         'https://api.openai.com/v1/chat/completions',
         headers={'Authorization': 'Bearer ' + openai.api_key},
         json={'model': "gpt-3.5-turbo", 'messages': [{'role': 'user', 'content': prompt}], 'max_tokens': 512, 'temperature': 0.5 }  )
-    print(response.json())
     reply = response.json()['choices'][0]['message']['content']
     print("AI: "+ reply)
     return reply
