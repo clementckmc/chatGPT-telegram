@@ -7,6 +7,12 @@ A Telegram chatbot built with Python, implementing chatGPT by applying [OpenAI A
 
 ## Getting Started
 
+### Install python-telegram-bot
+Install or upgrade [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) library via
+```
+$ pip3 install python-telegram-bot --upgrade
+```
+
 ### OpenAI API Setup
 Get your own OpenAI API key from [OpenAI API](https://platform.openai.com/overview).
 
@@ -16,7 +22,7 @@ Get your own OpenAI API key from [OpenAI API](https://platform.openai.com/overvi
 ### ENV setting
 Create `.env` file.
 ```
-touch .env
+$ touch .env
 ```
 Inside `.env`, set the following variables with the api key and bot token from above.
 ```
